@@ -36,5 +36,27 @@
  *   rangoli(3) // => ["  *", " * *", "* * *", " * *", "  *"]
  */
 export function rangoli(n) {
-  // Your code here
+  // Validation
+  if (typeof n !== "number" || !Number.isInteger(n) || n <= 0) {
+    return [];
+  }
+
+  const result = [];
+
+  // Top half (including middle)
+  for (let i = 1; i <= n; i++) {
+    const spaces = " ".repeat(n - i);
+    const stars = "* ".repeat(i).trim();
+    result.push(spaces + stars);
+  }
+
+  // Bottom half
+  for (let i = n - 1; i >= 1; i--) {
+    const spaces = " ".repeat(n - i);
+    const stars = "* ".repeat(i).trim();
+    result.push(spaces + stars);
+  }
+
+  return result;
 }
+

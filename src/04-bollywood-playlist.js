@@ -34,5 +34,29 @@
  *   // => { count: 2, totalDuration: 300 }
  */
 export function buildPlaylist(songs, maxDuration) {
-  // Your code here
+  if (!Array.isArray(songs) || typeof maxDuration !== "number" || maxDuration < 0) {
+    return { count: 0, totalDuration: 0 };
+  }
+
+  let totalDuration = 0;
+  let count = 0;
+
+  for (let i = 0; i < songs.length; i++) {
+    const song = songs[i];
+
+    // 🔴 Skip invalid song durations
+    if (typeof song !== "number" || song <= 0) {
+      continue;
+    }
+
+    // Stop if adding this song exceeds limit
+    if (totalDuration + song > maxDuration) {
+      break;
+    }
+
+    totalDuration += song;
+    count++;
+  }
+
+  return { count, totalDuration };
 }

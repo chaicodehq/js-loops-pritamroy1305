@@ -45,5 +45,74 @@
  *   // => [{ name: "Rahul", trainNumber: "12345", class: "sleeper", status: "confirmed" }]
  */
 export function railwayReservation(passengers, trains) {
-  // Your code here
+  // 1️⃣ Validation: if passengers or trains is not an array OR empty → return empty result
+  if (!Array.isArray(passengers) || !Array.isArray(trains)) return [];
+  if (passengers.length === 0 || trains.length === 0) return [];
+
+  const results = []; // Final output array
+
+  // 2️⃣ Process passengers one by one (FIFO order)
+  for (let i = 0; i < passengers.length; i++) {
+    const passenger = passengers[i];
+
+    let trainFound = null;
+
+    // 3️⃣ Find the train that matches passenger.trainNumber
+    for (let j = 0; j < trains.length; j++) {
+      if (trains[j].trainNumber === passenger.trainNumber) {
+        trainFound = trains[j];
+        break; // Stop once train is found
+      }
+    }
+
+    // 4️⃣ If no matching train found → train_not_found
+    if (!trainFound) {
+      results.push({
+        name: passenger.name,
+        trainNumber: passenger.trainNumber,
+        class: null,
+        status: "train_not_found"
+      });
+      continue; // Move to next passenger
+    }
+
+    const seats = trainFound.seats;
+
+    // 5️⃣ Try preferred class first
+    if (seats[passenger.preferred] > 0) {
+      seats[passenger.preferred]--; // MUTATE seat count
+
+      results.push({
+        name: passenger.name,
+        trainNumber: passenger.trainNumber,
+        class: passenger.preferred,
+        status: "confirmed"
+      });
+    }
+
+    // 6️⃣ If preferred not available → try fallback class
+    else if (seats[passenger.fallback] > 0) {
+      seats[passenger.fallback]--; // MUTATE seat count
+
+      results.push({
+        name: passenger.name,
+        trainNumber: passenger.trainNumber,
+        class: passenger.fallback,
+        status: "confirmed"
+      });
+    }
+
+    // 7️⃣ If neither preferred nor fallback available → waitlist
+    else {
+      results.push({
+        name: passenger.name,
+        trainNumber: passenger.trainNumber,
+        class: passenger.preferred,
+        status: "waitlisted"
+      });
+    }
+  }
+
+  // 8️⃣ Return final reservation status for all passengers
+  return results;
 }
